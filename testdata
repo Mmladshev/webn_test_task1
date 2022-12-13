@@ -1,0 +1,1 @@
+select (food.name,liquid.name)  from food inner join liquid on food.id=liquid.id where food.id=3;

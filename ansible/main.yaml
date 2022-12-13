@@ -1,0 +1,49 @@
+---
+- name: webinar
+  hosts: deploy
+  gather_facts: false
+  tasks:
+
+    - name: Ensures /tmp/webinartest dir exists
+      file: path=/tmp/webinartest state=directory
+
+    - name: copy Docker Compose files
+      copy:
+        src: ../docker/{{ item }}
+        dest: /tmp/webinartest/{{ item }}
+      loop:
+        - compose.yaml
+
+    - name: "Postgres deploy"
+      community.docker.docker_compose:
+        project_src: /tmp/webinartest/
+        state: present
+
+    - name: Move backup
+      copy:
+        src: ../dumpfile.sql
+        dest: /tmp/webinartest/dumpfile.sql
+      become: true
+
+    - name: Wait 5 secs after deploy
+      ansible.builtin.pause:
+        seconds: 5
+
+
+    - name: Create a new database with name "webinar" 
+      community.postgresql.postgresql_db:
+        name: webinar
+        login_host: localhost
+        login_password: postgres
+        port: 5432
+        
+
+    - name: Restore database from dump "webinar" 
+      community.postgresql.postgresql_db:
+        name: webinar
+        login_host: localhost
+        login_user: postgres
+        login_password: postgres
+        port: 5432
+        state: restore
+        target: /tmp/webinartest/dumpfile.sql

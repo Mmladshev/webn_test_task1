@@ -1,0 +1,11 @@
+---
+- name: webinar
+  hosts: deploy
+  gather_facts: false
+  tasks:
+
+    - name: "Stop all services"
+      community.docker.docker_compose:
+        project_src: /tmp/webinartest/
+        state: absent
+      

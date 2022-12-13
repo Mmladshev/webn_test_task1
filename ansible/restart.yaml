@@ -1,0 +1,11 @@
+---
+- name: webinar
+  hosts: deploy
+  gather_facts: false
+  tasks:
+
+    - name: "Restart all services"
+      community.docker.docker_compose:
+        project_src: /tmp/webinartest/
+        restarted: true
+      

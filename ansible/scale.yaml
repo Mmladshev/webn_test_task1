@@ -1,0 +1,19 @@
+---
+- name: webinar
+  hosts: deploy
+  gather_facts: false
+  tasks:
+
+    - name: "Scale backend service"
+      community.docker.docker_compose:
+        project_src: /tmp/webinartest/
+        scale:
+          backend: 3
+
+    - name: "Restart nginx service"
+      community.docker.docker_compose:
+        project_src: /tmp/webinartest/
+        restarted: true
+        services:
+          - nginx
+      
