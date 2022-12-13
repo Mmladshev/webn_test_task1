@@ -43,3 +43,9 @@ make deploy
 ```sh
 make scale
 ```
+
+## Result
+
+<p align="center">
+  <img src="./pics/result_aws.png">
+</p>
